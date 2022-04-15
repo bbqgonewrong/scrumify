@@ -1,9 +1,14 @@
-import React from "react"
-const AvatarPage = () => {
+import React from "react" 
+import blankAvatar from '../images/istockphoto-666545204-612x612.jpeg'
+const AvatarDisplay = ({ticket}) => {
     return(
-      <div>AvatarPage</div>
+      <div className="avatar-container">
+        <div className="image-container">
+          <img src={ticket.avatar ? ticket.avatar : blankAvatar} alt={'photo of'+ ticket.owner}/>
+        </div>
+      </div>
      )
   
    }
   
-  export default AvatarPage
+  export default AvatarDisplay
