@@ -1,15 +1,50 @@
-import {useState} from 'react'
+import axios from 'axios'
+import {useContext, useEffect, useState} from 'react'
+import { useNavigate,useParams } from 'react-router-dom'
+import CategoriesContext from '../context'
 
 
-const TicketPage = () => {
+const TicketPage = ({editMode}) => {
+
+  const navigate = useNavigate()
+  let {id} = useParams()
+
   const [formData,setformData] = useState({
     status:'not started',
     progress:0,
     timestamp: new Date().toISOString()
   })
-  const editMode = false
+  const {categories,setCategories} = useContext(CategoriesContext)
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    if(editMode){
+        const response = await axios.put(`http://localhost:8000/tickets/${id}`,{
+          data: formData
+        })
+        const success = response.status === 200
+        if(success){
+          navigate('/')
+        }
+    }
 
-  const handleSubmit = () => {console.log('Submitted')}
+    if(!editMode){
+      const response = await axios.post('http://localhost:8000/tickets',{formData})
+      const success = response.status === 200
+      if(success){
+        navigate('/')
+      }
+    }
+  }
+
+  const fetchData = async()=>{
+    const response = await axios.get(`http://localhost:8000/tickets/${id}`)
+    setformData(response.data.data)
+  }
+
+  useEffect(() => {
+    if(editMode) fetchData()
+  },[])
 
   const handleChange = (e) => {
     const value = e.target.value
@@ -20,7 +55,7 @@ const TicketPage = () => {
     }))
   }
 
-  const categories = ['test1','test2']
+  //const categories = ['test1','test2']
   const statuses = ['not started','stuck','working on it','done']
 
   console.log(formData)
@@ -50,7 +85,7 @@ const TicketPage = () => {
                 value={formData.description}
               />
               <label>Category</label>
-              <select name="category" value={formData.category} onChange={handleChange}>
+              <select name="category" value={formData.category || categories[0]} onChange={handleChange}>
                 {categories?.map((category,_index)=>(
                   <option value={category} key={_index}>{category}</option>
                 ))}
@@ -73,7 +108,7 @@ const TicketPage = () => {
                   type='radio'
                   onChange={handleChange}
                   value={1}
-                  checked={formData.priority === 1}
+                  checked={formData.priority == 1}
                 />
                 <label htmlFor='priority-2'>2</label>
                 <input
@@ -82,7 +117,7 @@ const TicketPage = () => {
                   type='radio'
                   onChange={handleChange}
                   value={2}
-                  checked={formData.priority === 2}
+                  checked={formData.priority == 2}
                 />
                 <label htmlFor='priority-3'>3</label>
                 <input
@@ -91,7 +126,7 @@ const TicketPage = () => {
                   type='radio'
                   onChange={handleChange}
                   value={3}
-                  checked={formData.priority === 3}
+                  checked={formData.priority == 3}
                 />
                 <label htmlFor='priority-4'>4</label>
                 <input
@@ -100,7 +135,7 @@ const TicketPage = () => {
                   type='radio'
                   onChange={handleChange}
                   value={4}
-                  checked={formData.priority === 4}
+                  checked={formData.priority == 4}
                 />
                 <label htmlFor='priority-5'>5</label>
                 <input
@@ -109,7 +144,7 @@ const TicketPage = () => {
                   type='radio'
                   onChange={handleChange}
                   value={5}
-                  checked={formData.priority === 5}
+                  checked={formData.priority == 5}
                 />
               </div>
               
