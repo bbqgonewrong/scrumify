@@ -63,6 +63,25 @@ app.post('/tickets',async (req,res)=>{
     }
 })
 
+app.put('/tickets/:documentId',async (req,res)=> {
+    const id = req.params.documentId
+    const data = req.body.data
+    const options = {
+        method: 'PUT',
+        headers:{
+            Accepts: 'application/json',
+            'X-Cassandra-Token': token,
+        },
+        data
+    } 
+    try {
+        const response = await axios(`${url}/${id}`,options)
+        res.status(200).json(response.data)
+    } catch (error) {
+        res.status(500).json({message:error})
+    }
+})
+
 app.delete('/tickets/:documentId',async (req,res)=> {
     const id = req.params.documentId
     const options = {
@@ -80,24 +99,7 @@ app.delete('/tickets/:documentId',async (req,res)=> {
     }
 })
 
-app.put('/tickets/:documentId',async (req,res)=> {
-    const id = req.params.documentId
-    const data = req.params.data
-    const options = {
-        method: 'PUT',
-        headers:{
-            Accepts: 'application/json',
-            'X-Cassandra-Token': token,
-        },
-        data
-    } 
-    try {
-        const response = await axios(`${url}/${id}`,options)
-        res.status(200).json(response.data)
-    } catch (error) {
-        res.status(500).json({message:error})
-    }
-})
+
 
 
 app.listen(PORT,()=> console.log('Server running on PORT '+PORT))
