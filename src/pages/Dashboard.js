@@ -53,7 +53,7 @@ const Dashboard = () => {
     ...new Set(tickets?.map(({category})=> category))
   ]
 
-  console.log(uniqueCategories)
+  //console.log(uniqueCategories)
 
   return(
     <div className='dashboard'>
